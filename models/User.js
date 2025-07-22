@@ -1,13 +1,16 @@
 import { DataTypes } from 'sequelize';
-import sequelize from '../config/db.js';
-
+import bcrypt from 'bcryptjs';
+import {sequelize} from '../config/db.js';
 const User = sequelize.define('User', {
   id: {
     type: DataTypes.UUID,
     defaultValue: DataTypes.UUIDV4,
     primaryKey: true,
-    autoincrement: true,
     allowNull: false,
+  },
+  title: {
+    type: DataTypes.ENUM('mr', 'ms', 'mrs'),
+    allowNull: false
   },
   name: {
     type: DataTypes.STRING,
@@ -24,8 +27,15 @@ const User = sequelize.define('User', {
   password: {
     type: DataTypes.STRING,
     allowNull: false,
+    set(value) {
+      if(value) {
+      const salt = bcrypt.genSaltSync(10);
+      const hashedPassword = bcrypt.hashSync(value, salt);
+      this.setDataValue('password', hashedPassword);
+    }
+ }
   },
-  DOB: {
+  dob: {
     type: DataTypes.DATE,
     allowNull: true,
   },
@@ -37,7 +47,4 @@ const User = sequelize.define('User', {
   timestamps: true, // createdAt and updatedAt will be managed automatically
   tableName: 'users', // PostgreSQL table name
 });
-
-
-
-module.exports = User;
+export default User;
