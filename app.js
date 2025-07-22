@@ -2,9 +2,9 @@
 import express from 'express';
 import cors from 'cors';
 import dotenv from 'dotenv';
-import morgan from 'morgan';
+// import morgan from 'morgan';
+import apiRoutes from './routes/index.js';
 
-import userroutes from './routes/userRoutes.js';
 
 import errorHandler from './middleware/errorHandler.js';
 
@@ -14,8 +14,8 @@ const app = express();
 
 app.use(cors());
 app.use(express.json());
-app.use(morgan('dev'));
-app.use('/api/users', userroutes);
+//app.use(morgan('dev'));
+app.use(apiRoutes);
 
 
 app.use(errorHandler);

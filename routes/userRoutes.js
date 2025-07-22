@@ -1,13 +1,12 @@
 // User routes will go here
-
 import express from 'express';
 import { loginUser } from '../controllers/userController.js';
+import { check } from 'express-validator';
+const userRoutes = express.Router();
 
-const router = express.Router();
-
-router.post('/login', [
+userRoutes.post('/login', [
     // Login route for user authentication
-    check('email')
+     check('email')
     .notEmpty().withMessage('Email is required')
     .isEmail().withMessage('Please enter a valid email address'),
     check('password')
@@ -17,4 +16,5 @@ router.post('/login', [
 ]);
 
 
-export default router;
+
+export default userRoutes;
