@@ -36,6 +36,19 @@ const Report = sequelize.define('Report', {
     type: DataTypes.ENUM('male', 'female', 'other'),
     allowNull: false
   },
+  reportType: {
+    type: DataTypes.ENUM('CBC', 'Liver Function', 'Thyroid', 'Diabetes', 'Other'),
+    allowNull: false
+  },
+  reportDate: {
+    type: DataTypes.DATE,
+    allowNull: false,
+    defaultValue: DataTypes.NOW
+  },
+  testResults: {
+    type: DataTypes.JSON,
+    allowNull: true,
+  },
   diagnosis: {
     type: DataTypes.TEXT,
     allowNull: false,
