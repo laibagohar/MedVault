@@ -7,7 +7,6 @@ const Report = sequelize.define('Report', {
     type: DataTypes.UUID,
     defaultValue: DataTypes.UUIDV4,
     primaryKey: true,
-    autoincrement: true,
     allowNull: false,
   },
   patientName: {
@@ -42,7 +41,6 @@ const Report = sequelize.define('Report', {
   },
   reportDate: {
     type: DataTypes.DATE,
-    allowNull: false,
     defaultValue: DataTypes.NOW
   },
   testResults: {
