@@ -5,7 +5,9 @@ import dotenv from 'dotenv';
 import morgan from 'morgan';
 import routes from './routes/index.js';
 import reportRoutes from './routes/reportRoutes.js';
+import userRoutes from './routes/userRoutes.js';
 import errorHandler from './middleware/errorHandler.js';
+
 
 dotenv.config();
 
@@ -15,6 +17,8 @@ app.use(cors());
 app.use(express.json());
 app.use(morgan('dev'));
 
+app.use('/api/users', userRoutes);
+app.use('/api/reports', reportRoutes);
 app.use('/api', routes);
 
 app.use(errorHandler);
