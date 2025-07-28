@@ -7,4 +7,5 @@ const router = express.Router();
 // Route to upload a PDF report
 router.post('/upload', upload.single('file'), uploadReport);
 
+
 export default router;
