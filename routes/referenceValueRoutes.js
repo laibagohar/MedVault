@@ -12,19 +12,19 @@ import {
 
 const router = express.Router();
 
-router.route('/')
-  .get(getReferenceValues)
-  .post(protect, createReferenceValue);
-
 router.route('/category/:category')
   .get(getReferenceValuesByCategory);
 
 router.route('/test/:testName')
   .get(getReferenceValuesByTest);
 
+router.route('/')
+  .get(getReferenceValues)           // GET /api/referenceValues - Get all
+  .post(protect, createReferenceValue); // POST /api/referenceValues - Create (protected)
+
 router.route('/:id')
-  .get(getReferenceValueById)
-  .put(protect, updateReferenceValue)
-  .delete(protect, deleteReferenceValue);
+  .get(getReferenceValueById)        // GET /api/referenceValues/:id - Get by ID
+  .put(protect, updateReferenceValue)    // PUT /api/referenceValues/:id - Update (protected)
+  .delete(protect, deleteReferenceValue); // DELETE /api/referenceValues/:id - Delete (protected)
 
 export default router;

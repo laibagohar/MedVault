@@ -1,5 +1,4 @@
-import ReferenceValue from '../models/referenceValues.js';
-
+import ReferenceValue from '../models/referenceValue.js';
 // POST reference value
 export const createReferenceValue = async (req, res) => {
   try {
@@ -10,30 +9,32 @@ export const createReferenceValue = async (req, res) => {
       minValue,
       maxValue,
       gender,
-      age,
+      ageMin,
+      ageMax
     } = req.body;
 
     // Validation
-    if (!testCategory || !testName || !testUnit || minValue === undefined || maxValue === undefined) {
+    if (!testCategory || !testName || !testUnit || minValue === undefined || maxValue === undefined || !gender) {
       return res.status(400).json({
         success: false,
-        message: 'Please provide all required fields'
+        message: 'Please provide all required fields (testCategory, testName, testUnit, minValue, maxValue, gender)'
       });
     }
-
+    // Check for existing reference value
     const existingValue = await ReferenceValue.findOne({
       where: {
         testCategory,
         testName,
         gender,
-        age
+        ageMin: finalAgeMin,
+        ageMax: finalAgeMax
       }
     });
 
     if (existingValue) {
       return res.status(400).json({
         success: false,
-        message: 'A reference value with these criteria already exists'
+        message: 'A reference value with these same criteria already exists'
       });
     }
 
@@ -44,12 +45,13 @@ export const createReferenceValue = async (req, res) => {
       minValue,
       maxValue,
       gender,
-      age,
-      userId: req.user.id
+      ageMin: finalAgeMin,
+      ageMax: finalAgeMax
     });
 
     return res.status(201).json({
       success: true,
+      message: 'Reference value created successfully',
       data: referenceValue
     });
   } catch (error) {
@@ -61,14 +63,15 @@ export const createReferenceValue = async (req, res) => {
   }
 };
 
-
 // GET reference values
 export const getReferenceValues = async (req, res) => {
   try {
     const referenceValues = await ReferenceValue.findAll({
       order: [
         ['testCategory', 'ASC'],
-        ['testName', 'ASC']
+        ['testName', 'ASC'],
+        ['gender', 'ASC'],
+        ['ageMin', 'ASC']
       ]
     });
 
@@ -85,7 +88,6 @@ export const getReferenceValues = async (req, res) => {
     });
   }
 };
-
 
 // GET values by id
 export const getReferenceValueById = async (req, res) => {
@@ -112,7 +114,6 @@ export const getReferenceValueById = async (req, res) => {
   }
 };
 
-
 // GET values by category
 export const getReferenceValuesByCategory = async (req, res) => {
   try {
@@ -122,11 +123,16 @@ export const getReferenceValuesByCategory = async (req, res) => {
       where: {
         testCategory: category
       },
-      order: [['testName', 'ASC']]
+      order: [
+        ['testName', 'ASC'],
+        ['gender', 'ASC'],
+        ['ageMin', 'ASC']
+      ]
     });
 
     return res.status(200).json({
       success: true,
+      category: category,
       count: referenceValues.length,
       data: referenceValues
     });
@@ -139,6 +145,36 @@ export const getReferenceValuesByCategory = async (req, res) => {
   }
 };
 
+// GET values by test name
+export const getReferenceValuesByTest = async (req, res) => {
+  try {
+    const { testName } = req.params;
+    
+    const referenceValues = await ReferenceValue.findAll({
+      where: {
+        testName: testName
+      },
+      order: [
+        ['testCategory', 'ASC'],
+        ['gender', 'ASC'],
+        ['ageMin', 'ASC']
+      ]
+    });
+
+    return res.status(200).json({
+      success: true,
+      testName: testName,
+      count: referenceValues.length,
+      data: referenceValues
+    });
+  } catch (error) {
+    return res.status(500).json({
+      success: false,
+      message: 'Server error',
+      error: error.message
+    });
+  }
+};
 
 // Update reference values by id
 export const updateReferenceValue = async (req, res) => {
@@ -151,18 +187,12 @@ export const updateReferenceValue = async (req, res) => {
         message: 'Reference value not found'
       });
     }
-    if (referenceValue.userId !== req.user.id) {
-      return res.status(403).json({
-        success: false,
-        message: 'Not authorized to update this reference value'
-      });
-    }
-
     await referenceValue.update(req.body);
     referenceValue = await ReferenceValue.findByPk(req.params.id);
 
     return res.status(200).json({
       success: true,
+      message: 'Reference value updated successfully',
       data: referenceValue
     });
   } catch (error) {
@@ -173,7 +203,6 @@ export const updateReferenceValue = async (req, res) => {
     });
   }
 };
-
 
 // DELETE reference values by id
 export const deleteReferenceValue = async (req, res) => {
@@ -186,19 +215,10 @@ export const deleteReferenceValue = async (req, res) => {
         message: 'Reference value not found'
       });
     }
-
-    // Check if user owns this reference value
-    if (referenceValue.userId !== req.user.id) {
-      return res.status(403).json({
-        success: false,
-        message: 'Not authorized to delete this reference value'
-      });
-    }
-
-    // Delete reference value
     await referenceValue.destroy();
     return res.status(200).json({
       success: true,
+      message: 'Reference value deleted successfully',
       data: {}
     });
   } catch (error) {
@@ -208,4 +228,4 @@ export const deleteReferenceValue = async (req, res) => {
       error: error.message
     });
   }
-}
+};

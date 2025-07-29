@@ -1,10 +1,9 @@
 import { DataTypes } from 'sequelize';
 import sequelize from '../config/db.js';
-import User from './User.js';
 
 const ReferenceValue = sequelize.define('referenceValue', {
     id: {
-        type: DataTypes.UUId,
+        type: DataTypes.UUID,
         defaultValue: DataTypes.UUIDV4,
         primaryKey: true,
         allowNull: false,
@@ -33,23 +32,18 @@ const ReferenceValue = sequelize.define('referenceValue', {
         type: DataTypes.ENUM('male', 'female', 'other'),
         allowNull: false,
     },
-    age: {
-        type: DataTypes.INTEGER,
-        allowNull: false,
+    ageMin: {
+    type: DataTypes.INTEGER,
+    allowNull: false,
+    defaultValue: 0
     },
-    userId: {
-        type: DataTypes.UUID,
-        allowNull: false,
-        references: {
-            model: 'Users',
-            key: 'id',
-        },
-    },
+    ageMax: {
+    type: DataTypes.INTEGER,
+    allowNull: false,
+    defaultValue: 120
+    }, 
 }, {
-    timestamps: true,
+  timestamps: true,
+  tableName: 'reference_values'
 });
-
-ReferenceValue.belongsTo(User, { foreignKey: 'userId' });
-User.hasMany(ReferenceValue, { foreignKey: 'userId' });
-
 export default ReferenceValue;
