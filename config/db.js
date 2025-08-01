@@ -20,12 +20,11 @@ const sequelize = new Sequelize(
     },
   }
 );
-
 const connectDB = async () => {
   try {
     await sequelize.authenticate();
     console.log('PostgreSQL connected successfully');
-    
+
     // Sync all models
     await sequelize.sync({ force: false });
     console.log('Database synced successfully');

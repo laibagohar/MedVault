@@ -1,4 +1,3 @@
-// User routes will go here
 import express from 'express';
 import { loginUser } from '../controllers/userController.js';
 import { check } from 'express-validator';
@@ -14,7 +13,5 @@ userRoutes.post('/login', [
     .isLength({ min: 8 }).withMessage('Password must be at least 8 characters long'),
     loginUser
 ]);
-
-
 
 export default userRoutes;
