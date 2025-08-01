@@ -1,4 +1,3 @@
-// User controller logic with Sequelize
 import User from '../models/User.js';
 import bcrypt from 'bcrypt';
 import generateToken from '../utils/generateToken.js';
@@ -89,13 +88,14 @@ export const registerUser = async (req, res) => {
     });
   }
 };
+
 // login function
 export const loginUser = async (req, res) => {
   const { email, password } = req.body;
   try {
     console.log('Login attempt for:', email);
     const user = await User.findOne({ where: { email } });
-
+    
     if (!user) {
       return res.status(404).json({ message: 'User not found' });
     }

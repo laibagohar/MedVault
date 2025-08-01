@@ -14,6 +14,4 @@ userRoutes.post('/login', [
     loginUser
 ]);
 
-
-
 export default userRoutes;
