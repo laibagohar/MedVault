@@ -1,10 +1,10 @@
-import express from 'express';
-import userRoutes from './userRoutes.js';
-import reportRoutes from './reportRoutes.js';
+import express from "express";
+import userRoutes from "./userRoutes.js";
+import reportRoutes from "./reportRoutes.js";
 
-const router = express.Router();
+const apiRoutes = express.Router();
 
-router.use('/users', userRoutes);
-router.use('/reports', reportRoutes);
+apiRoutes.use(userRoutes);
+apiRoutes.use(reportRoutes);
 
-export default router;
+export default apiRoutes;
