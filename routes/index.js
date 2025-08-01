@@ -3,10 +3,10 @@ import userRoutes from './userRoutes.js';
 import reportRoutes from './reportRoutes.js';
 import ReferenceValueRoutes from './referenceValueRoutes.js';
 
-const router = express.Router();
+const apiRoutes = express.Router();
 
 router.use('/users', userRoutes);
 router.use('/reports', reportRoutes);
 router.use('/referenceValues', ReferenceValueRoutes);
 
-export default router;
+export default apiRoutes;

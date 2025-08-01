@@ -1,12 +1,10 @@
-// Token generation utility will go here
-import jwt from 'jsonwebtoken';
+// Token generation utility
+import jwt from 'jsonwebtoken';   
 
-const generateToken = (id) => {
-  return jwt.sign(
-    { id },
-    process.env.JWT_SECRET,
-    { expiresIn: process.env.JWT_EXPIRE || '1h' }
-  );
+// generate token
+const generateToken = (user) => {
+  const token = jwt.sign({ id: user.id }, process.env.JWT_SECRET, { expiresIn: process.env.JWT_EXPIRES_IN || '1h' });
+  return token;
 };
 
 export default generateToken;

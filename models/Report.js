@@ -1,5 +1,5 @@
 import { DataTypes } from 'sequelize';
-import sequelize from '../config/db.js';
+import {sequelize} from '../config/db.js';
 import User from './User.js';
  
 const Report = sequelize.define('Report', {
@@ -81,12 +81,13 @@ const Report = sequelize.define('Report', {
   userId: {
     type: DataTypes.UUID,
     references: {
-      model: 'Users',
+      model: 'users',
       key: 'id'
     }
   }
 }, {
-  timestamps: true
+  timestamps: true,
+  tableName: 'reports'
 });
 Report.belongsTo(User, { foreignKey: 'userId' });
 User.hasMany(Report, { foreignKey: 'userId' });
