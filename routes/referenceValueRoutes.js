@@ -20,11 +20,11 @@ router.route('/test/:testName')
 
 router.route('/')
   .get(getReferenceValues)           // GET /api/referenceValues - Get all
-  .post(protect, createReferenceValue); // POST /api/referenceValues - Create (protected)
+  .post(protect, createReferenceValue); // POST /api/referenceValues - Create
 
 router.route('/:id')
   .get(getReferenceValueById)        // GET /api/referenceValues/:id - Get by ID
-  .put(protect, updateReferenceValue)    // PUT /api/referenceValues/:id - Update (protected)
-  .delete(protect, deleteReferenceValue); // DELETE /api/referenceValues/:id - Delete (protected)
+  .put(protect, updateReferenceValue)    // PUT /api/referenceValues/:id - Update
+  .delete(protect, deleteReferenceValue); // DELETE /api/referenceValues/:id - Delete
 
 export default router;

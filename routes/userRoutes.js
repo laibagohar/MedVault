@@ -1,9 +1,18 @@
 import express from 'express';
 import { loginUser } from '../controllers/userController.js';
 import { check } from 'express-validator';
-const userRoutes = express.Router();
+import { protect } from '../middleware/authMiddleware.js';
+import { body } from 'express-validator';
 
-userRoutes.post('/login', [
+const router = express.Router();
+
+router.post('/register', [
+  body('email').isEmail().normalizeEmail(),
+  body('password').isLength({ min: 8 }),
+  body('fullName').trim().isLength({ min: 2 }),
+], registerUser);
+
+router.post('/login', [
     // Login route for user authentication
      check('email')
     .notEmpty().withMessage('Email is required')
@@ -14,4 +23,6 @@ userRoutes.post('/login', [
     loginUser
 ]);
 
-export default userRoutes;
+router.get('/profile', protect, getUserProfile);
+
+export default router;

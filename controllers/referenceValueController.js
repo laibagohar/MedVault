@@ -118,7 +118,7 @@ export const getReferenceValueById = async (req, res) => {
 export const getReferenceValuesByCategory = async (req, res) => {
   try {
     const { category } = req.params;
-    
+
     const referenceValues = await ReferenceValue.findAll({
       where: {
         testCategory: category
@@ -149,7 +149,7 @@ export const getReferenceValuesByCategory = async (req, res) => {
 export const getReferenceValuesByTest = async (req, res) => {
   try {
     const { testName } = req.params;
-    
+
     const referenceValues = await ReferenceValue.findAll({
       where: {
         testName: testName
