@@ -6,7 +6,7 @@ dotenv.config();
 const sequelize = new Sequelize(
   process.env.DB_NAME || 'medvault',
   process.env.DB_USER || 'postgres',
-  process.env.DB_PASSWORD || 'password',
+  process.env.DB_PASSWORD,
   {
     host: process.env.DB_HOST || 'localhost',
     port: process.env.DB_PORT || 5432,
@@ -26,7 +26,12 @@ const connectDB = async () => {
     console.log('PostgreSQL connected successfully');
 
     // Sync all models
-    await sequelize.sync({ force: false });
+    const User = (await import('../models/User.js')).default;
+    const referenceValue = (await import('../models/referenceValue.js')).default;
+    const Report = (await import('../models/Report.js')).default;
+    await User.sync();
+    await referenceValue.sync();
+    await Report.sync();
     console.log('Database synced successfully');
   } catch (error) {
     console.error('PostgreSQL connection error:', error);

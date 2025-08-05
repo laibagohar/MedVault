@@ -1,5 +1,5 @@
 import { DataTypes } from 'sequelize';
-import {sequelize} from '../config/db.js';
+import { sequelize } from '../config/db.js';
 import User from './User.js';
  
 const Report = sequelize.define('Report', {
@@ -78,8 +78,17 @@ const Report = sequelize.define('Report', {
     type: DataTypes.ENUM('pending', 'reviewed', 'completed'),
     defaultValue: 'pending'
   },
+  recommendations: {
+    type: DataTypes.JSON,
+    allowNull: true
+  },
+  analyzedAt: {
+    type: DataTypes.DATE,
+    allowNull: true
+  },
   userId: {
     type: DataTypes.UUID,
+    allowNull: false,
     references: {
       model: 'users',
       key: 'id'
@@ -87,9 +96,16 @@ const Report = sequelize.define('Report', {
   }
 }, {
   timestamps: true,
-  tableName: 'reports'
+  tableName: 'reports'  
 });
-Report.belongsTo(User, { foreignKey: 'userId' });
-User.hasMany(Report, { foreignKey: 'userId' });
 
+Report.belongsTo(User, { 
+  foreignKey: 'userId',
+  as: 'user' 
+});
+
+User.hasMany(Report, { 
+  foreignKey: 'userId',
+  as: 'reports' 
+});
 export default Report;
