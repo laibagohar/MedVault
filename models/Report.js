@@ -98,7 +98,6 @@ const Report = sequelize.define('Report', {
   timestamps: true,
   tableName: 'reports'  
 });
-
 Report.belongsTo(User, { 
   foreignKey: 'userId',
   as: 'user' 

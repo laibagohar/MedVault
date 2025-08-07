@@ -1,0 +1,84 @@
+nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 20px;
+    background-color: #3f2b63;
+}
+
+.logo h1 {
+    font-size: 2rem;
+    font-weight: bold;
+    color: #fff;
+    margin: 0;
+}
+
+.nav-links {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+}
+
+.nav-links a {
+    color: #fff;
+    text-decoration: none;
+    font-weight: bold;
+    font-size: 1rem;
+}
+
+.nav-links a:hover {
+    text-decoration: underline;
+}
+
+/* Profile Circle */
+.user-profile {
+    background-color: #6a4cad;
+    color: #fff;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    font-size: 1.2rem;
+    font-weight: bold;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    position: relative;
+}
+
+.user-profile:hover {
+    background-color: #7c5fd3;
+}
+
+/* Dropdown */
+.user-profile-dropdown {
+    position: absolute;
+    top: 50px;
+    right: 0;
+    background-color: #fff;
+    color: #333;
+    border-radius: 10px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    padding: 10px 15px;
+    width: 180px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    z-index: 1000;
+}
+
+.user-profile-dropdown p {
+    margin: 0;
+    font-weight: bold;
+    font-size: 0.95rem;
+}
+
+.user-profile-dropdown a {
+    color: #6a4cad;
+    text-decoration: none;
+    font-weight: bold;
+}
+
+.user-profile-dropdown a:hover {
+    text-decoration: underline;
+}

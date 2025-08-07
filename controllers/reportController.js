@@ -1,11 +1,62 @@
 import Report from '../models/Report.js';
 import User from '../models/User.js';
+import ReferenceValue from '../models/referenceValue.js';
 import { uploadMiddleware, validateFile, getFileInfo, deleteFile, determineReportType } from '../services/fileUploadService.js';
 import { extractText, validateExtractedText } from '../services/ocrService.js';
 import { extractPatientInfo, parseTestResults } from '../services/dataExtractionService.js';
 import { generateRecommendations, generateSummaryReport } from '../services/recommendationService.js';
+// Controller to handle PDF upload and report creation
+export const uploadReport = async (req, res) => {
+  try {
+    
+    if (!req.file) {
+      return res.status(400).json({ message: 'No file uploaded or file is not a PDF.' });
+    }
+    console.log('file uploaded successfully', req.file);
 
-// GET all reports for authenticated user
+    // Extract report data from request body
+    const {
+      patientName,
+      patientEmail,
+      patientAge,
+      patientGender,
+      reportType,
+      reportDate,
+      testResults,
+      diagnosis,
+      description,
+      status,
+      userId
+    } = req.body;
+
+    console.log('report data', req.body);
+
+        // Create new report
+    const report = await Report.create({
+      patientName,
+      patientEmail,
+      patientAge,
+      patientGender,
+      reportType,
+      reportDate,
+      testResults,
+      diagnosis,
+      description,
+      fileName: req.file.filename,
+      filePath: req.file.path,
+      fileSize: req.file.size,
+      mimeType: req.file.mimetype,
+      status,
+      userId
+    });
+
+    res.status(201).json({ message: 'Report uploaded successfully', report });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
+
 export const getAllReports = async (req, res) => {
   try {
     const reports = await Report.findAll({
@@ -67,6 +118,26 @@ export const getReportById = async (req, res) => {
   }
 };
 
+// for user id
+export const getReportByUserId = async (req, res) => {
+  try{
+  const reports = await Report.findAll({ where: { userId: req.params.id } });
+  
+  if (!reports) {
+    res.status(404);
+    throw new Error('Reports not found');
+  }
+  res.json(reports);
+}
+catch (error) {
+    return res.status(500).json({
+
+      message: 'Could not retrieve the report',
+      error: error.message
+    });
+  }
+};
+
 // CREATE new report with file upload and OCR processing (CLEAN VERSION)
 export const createReport = async (req, res) => {
   try {
@@ -93,11 +164,11 @@ export const createReport = async (req, res) => {
 
         // Get file information
         const fileInfo = getFileInfo(req.file);
-        
+
         // Extract text from uploaded file
         console.log('🔍 Starting OCR processing...');
         const extractionResult = await extractText(fileInfo.path, fileInfo.mimeType);
-        
+
         if (!extractionResult.success) {
           deleteFile(fileInfo.path);
           return res.status(400).json({
@@ -118,15 +189,15 @@ export const createReport = async (req, res) => {
         // Determine report type
         const reportType = determineReportType(fileInfo.originalName, extractionResult.text);
         console.log('🏷️ Detected Report Type:', reportType);
-        
+
         // Extract patient information
         console.log('👤 Extracting patient information...');
         const patientInfo = extractPatientInfo(extractionResult.text);
-        
+
         // Parse test results based on report type
         console.log(`🧪 Parsing ${reportType} test results...`);
         const testParsingResult = parseTestResults(extractionResult.text, reportType);
-        
+
         if (!testParsingResult.success) {
           console.error('❌ Test parsing failed:', testParsingResult.error);
           // Don't fail completely - continue with empty results
@@ -166,25 +237,25 @@ export const createReport = async (req, res) => {
           patientEmail: patientEmail || req.user.email,
           patientAge: patientAge ? parseInt(patientAge) : patientInfo.age || 0,
           patientGender: patientGender || patientInfo.gender || 'other',
-          
+
           // Report details
           reportType: reportType,
           reportDate: patientInfo.registrationDate || new Date(),
           testResults: testParsingResult.success ? testParsingResult.data : {},
           diagnosis: diagnosis || 'Auto-generated from OCR',
           description: description || `${reportType} test results processed automatically`,
-          
+
           // File information
           fileName: fileInfo.originalName,
           filePath: fileInfo.path,
           fileSize: fileInfo.size,
           mimeType: fileInfo.mimeType,
-          
+
           // Processing results
           recommendations: recommendationsResult.success ? recommendationsResult.data : null,
           analyzedAt: new Date(),
           status: 'completed',
-          
+
           // User association
           userId: req.user.id
         };
@@ -218,12 +289,12 @@ export const createReport = async (req, res) => {
 
       } catch (processingError) {
         console.error('💥 Report processing error:', processingError);
-        
+
         // Clean up uploaded file on error
         if (req.file) {
           deleteFile(req.file.path);
         }
-        
+
         return res.status(500).json({
           success: false,
           message: 'Error processing report',
@@ -286,7 +357,7 @@ export const updateReport = async (req, res) => {
     }
 
     await report.update(updates);
-    
+
     // Fetch updated report with user info
     report = await Report.findByPk(reportId, {
       include: [
@@ -385,7 +456,7 @@ export const reprocessReport = async (req, res) => {
     try {
       // Re-extract text
       const extractionResult = await extractText(report.filePath, report.mimeType);
-      
+
       if (!extractionResult.success) {
         return res.status(400).json({
           success: false,
@@ -397,7 +468,7 @@ export const reprocessReport = async (req, res) => {
       // Re-extract patient info and parse test results
       const patientInfo = extractPatientInfo(extractionResult.text);
       const testParsingResult = parseTestResults(extractionResult.text, report.reportType);
-      
+
       if (!testParsingResult.success) {
         return res.status(400).json({
           success: false,
@@ -514,7 +585,7 @@ export const getReportsByType = async (req, res) => {
   try {
     const { type } = req.params;
     const validTypes = ['CBC', 'Liver Function', 'Diabetes', 'Thyroid', 'Other'];
-    
+
     if (!validTypes.includes(type)) {
       return res.status(400).json({
         success: false,
@@ -560,3 +631,4 @@ export default {
   getReportRecommendations,
   getReportsByType
 };
+

@@ -20,6 +20,10 @@ export const createReferenceValue = async (req, res) => {
         message: 'Please provide all required fields (testCategory, testName, testUnit, minValue, maxValue, gender)'
       });
     }
+    // Process age values
+    const finalAgeMin = ageMin || null;
+    const finalAgeMax = ageMax || null;
+
     // Check for existing reference value
     const existingValue = await ReferenceValue.findOne({
       where: {
@@ -65,15 +69,9 @@ export const createReferenceValue = async (req, res) => {
 
 // GET reference values
 export const getReferenceValues = async (req, res) => {
+  console.log("📥 getReferenceValues route hit!");
   try {
-    const referenceValues = await ReferenceValue.findAll({
-      order: [
-        ['testCategory', 'ASC'],
-        ['testName', 'ASC'],
-        ['gender', 'ASC'],
-        ['ageMin', 'ASC']
-      ]
-    });
+    const referenceValues = await ReferenceValue.findAll();
 
     return res.status(200).json({
       success: true,
