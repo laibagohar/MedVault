@@ -1,8 +1,13 @@
 import express from 'express';
+import { uploadReport } from '../controllers/reportController.js';
+import { upload } from '../utils/uploadfile.js';
+import fs from 'fs';
 import { protect } from '../middleware/authMiddleware.js';
+
 import { 
   getAllReports, 
   getReportById, 
+  getReportByUserId,
   createReport,
   updateReport,
   deleteReport,
@@ -16,6 +21,17 @@ const router = express.Router();
 // All routes require authentication
 router.use(protect);
 
+router.route('/')
+  .get(getAllReports)      // GET /api/reports - Get all user reports
+  .post(createReport);     // POST /api/reports - Create new report with file upload
+
+router.route('/:id')
+  .get(protect, getReportById);
+router.route('/getReportByUserId/:id')
+  .get(protect, getReportByUserId);
+
+
+router.use(protect);
 router.route('/')
   .get(getAllReports)      // GET /api/reports - Get all user reports
   .post(createReport);     // POST /api/reports - Create new report with file upload

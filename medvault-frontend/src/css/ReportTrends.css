@@ -1,0 +1,72 @@
+.report-trends-wrapper {
+    max-width: 1000px;
+    margin: 30px auto;
+    padding: 24px;
+    background: #f8f9fa;
+    border-radius: 12px;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.07);
+  }
+  
+  .report-type-section {
+    margin-bottom: 48px;
+  }
+  
+  .report-type-section h2 {
+    color: #007bff;
+    margin-bottom: 18px;
+  }
+  
+  .report-charts {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 32px;
+    justify-content: center;
+  }
+  
+  .report-chart-container {
+    flex: 1 1 350px;
+    min-width: 320px;
+    max-width: 420px;
+    background: #fff;
+    border-radius: 8px;
+    padding: 18px 12px 12px 12px;
+    margin-bottom: 24px;
+    box-shadow: 0 1px 6px rgba(0,0,0,0.06);
+  }
+  
+  .report-chart-container h3 {
+    text-align: center;
+    margin-bottom: 10px;
+    font-size: 1.1rem;
+    color: #333;
+  }
+  
+  .report-recommendations {
+    margin-top: 36px;
+    background: #fff;
+    border-radius: 8px;
+    padding: 20px 18px;
+    box-shadow: 0 1px 6px rgba(0,0,0,0.06);
+  }
+  
+  .report-recommendations h3 {
+    margin-bottom: 12px;
+    color: #007bff;
+  }
+  
+  .report-recommendations ul {
+    margin: 0 0 10px 20px;
+    padding: 0;
+  }
+  
+  .report-recommendations b {
+    color: #333;
+  }
+  
+  .report-trends-loading,
+  .report-trends-empty {
+    text-align: center;
+    margin: 40px 0;
+    font-size: 1.2rem;
+    color: #888;
+  }

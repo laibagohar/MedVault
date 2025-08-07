@@ -12,6 +12,7 @@ import {
 
 const router = express.Router();
 
+
 router.route('/category/:category')
   .get(getReferenceValuesByCategory);
 
@@ -24,7 +25,10 @@ router.route('/')
 
 router.route('/:id')
   .get(getReferenceValueById)        // GET /api/referenceValues/:id - Get by ID
-  .put(protect, updateReferenceValue)    // PUT /api/referenceValues/:id - Update
-  .delete(protect, deleteReferenceValue); // DELETE /api/referenceValues/:id - Delete
-
+  .put(protect, updateReferenceValue)    // PUT /api/referenceValues/:id - Update (protected)
+  .delete(protect, deleteReferenceValue); // DELETE /api/referenceValues/:id - Delete (protected)
+router.route('/getreferencevalue/:id')
+    .get(protect, getReferenceValues);
+router.route('/createReferenceValue')
+    .post(createReferenceValue);
 export default router;
